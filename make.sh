@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir="tmp"
+dir=$2
 img=$1
 
 # create a directory
@@ -27,3 +27,5 @@ convert -delay 1 -loop 0 $dir/flags_resized_mixed/resize_*.png $dir/icon_movie.g
 
 # make it an movie
 ffmpeg -r 30 -i $dir/flags_resized_mixed/resize_%4d.png -c:v libx264 -pix_fmt yuv420p -s 400x400 $dir/icon_movie.mp4
+
+exit 0
