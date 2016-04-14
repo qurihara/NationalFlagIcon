@@ -21,10 +21,13 @@ server = http.createServer(function(req, res) {
   if (req.url == '/') {
     res.writeHead(200, {'content-type': 'text/html'});
     res.end(
+      '<h4>The Unievrsal Background Filter for SNS Profile Picture</h4>'+
+      '<p>Upload your SNS profile picture and wait for a while.</p>'+
       '<form action="/upload" enctype="multipart/form-data" method="post">'+
       '<input type="file" name="upload" multiple="multiple"><br>'+
       '<input type="submit" value="Upload">'+
-      '</form>'
+      '</form>'+
+      ' <p>(c)Kazutaka Kurihara</p>'
     );
   } else if (req.url == '/upload') {
     var form = new formidable.IncomingForm(),
@@ -61,7 +64,8 @@ server = http.createServer(function(req, res) {
 
               //manipulate output
               var gifpat = now + '/icon_movie.gif';
-              var movpat = pat + '.mp4';
+              //var movpat = pat + '.mp4';
+              var movpat = now + '/icon_movie.mp4';
               fs.readFile(gifpat,function(err,data){
                 if(err){
                   console.log(err);
@@ -70,13 +74,13 @@ server = http.createServer(function(req, res) {
                 }
                 var str = data.toString('base64');
 
-                // fs.readFile(movpat,function(err,datam){
-                //   if(err){
-                //     console.log(err);
-                //     deleteFiles(pat,dir);
-                //     return;
-                //   }
-                //   var strm = datam.toString('base64');
+                fs.readFile(movpat,function(err,datam){
+                  if(err){
+                    console.log(err);
+                    deleteFiles(pat,dir);
+                    return;
+                  }
+                  var strm = datam.toString('base64');
 
                   var data = ejs.render(template, {
                     imgs: "'data:image/gif;base64," + str + "'",
@@ -89,7 +93,7 @@ server = http.createServer(function(req, res) {
 
                   console.log(pat);
                   deleteFiles(pat,dir);
-                // });
+                });
               });
 
             } else {
