@@ -1,2 +1,2 @@
-exports.port = '8888';
+exports.port = '3000';
 exports.exepath = './make.sh';

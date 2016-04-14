@@ -1,6 +1,6 @@
 # The Universal Background Filter for SNS Profile Picture
 
-MacでSNSのプロフィール写真の背景として使用する、世界中のすべての国の国旗のアニメーション画像を生成する手順のメモ。
+SNSのプロフィール写真の背景として使用する、世界中のすべての国の国旗のアニメーション画像を生成するサービス。
 
 ![アイコン例](https://github.com/qurihara/NationalFlagIcon/blob/master/example/resize_movie_icon.gif?raw=true)
 
@@ -23,6 +23,8 @@ brew install ffmpeg
 npm install
 
 npm app
+
+And access the app with your browser (default: http://localhost:3000 ).
 
 #For your info: Download public domain flag pictures from wikipedia
 

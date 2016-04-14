@@ -11,8 +11,8 @@ var ejs = require('ejs');
 
 var template = fs.readFileSync('viewer.ejs', 'utf-8');
 
-var TEST_TMP="./img";
-var TEST_PORT=3000;
+//var TEST_TMP="./img";
+var TEST_PORT=settings.port;//3000;
 
 var exec = require('child_process').exec;
 var rmdir = require('rmdir');
