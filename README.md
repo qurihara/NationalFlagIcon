@@ -1,12 +1,12 @@
 # The Universal Background Filter for SNS Profile Picture
 
-SNSのプロフィール写真の背景として使用する、世界中のすべての国の国旗のアニメーション画像を生成するサービス。
+A web app that creates your SNS profile picture that contains ALL the national flags in the world. No terrorism, and pray for peace.
 
-![アイコン例](https://github.com/qurihara/NationalFlagIcon/blob/master/example/resize_movie_icon.gif?raw=true)
+SNSのプロフィール写真の背景に世界中のすべての国の国旗をアニメーションさせる画像を生成する、平和のためのサービス。
+
+![example](https://github.com/qurihara/NationalFlagIcon/blob/master/example/resize_movie_icon.gif?raw=true)
 
 ベルギーとかフランスとか特定の国に限定せず、世界中のすべての国の平和を思っているけど、それはつまりどの国もたいして思っていないのと同じである。でもテロは我々の過剰反応を得るのが目的の一つであるから、予めすべての国への配慮を表明していれば、テロに与しないという意思は表明できる・・かも。
-
-![国旗全部入りGIFアニメ](https://github.com/qurihara/NationalFlagIcon/blob/master/example/movie.gif?raw=true)
 
 #How to use
 
