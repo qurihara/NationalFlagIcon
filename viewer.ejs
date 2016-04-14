@@ -4,25 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Viewer</title>
-    <script type="text/javascript" src="three.min.js"></script>
-    <script type="text/javascript" src="thview.js"></script>
 </head>
 
 <body>
-    <center></center><div id="image1" style="position:absolute;top:0px;left:0px;"></div></center>
-    <script type="text/javascript" >
-        var img1 = new ThView({
-            id:'image1',
-            file: [
-<%- imgs %>
-            ],
-            interval: <%- interval %>,
-            width: <%- width %>, 
-            height: <%- height %>,
-            firstview: <%- firstview %>,
-            rotation: <%- rotation %>, 
-            speed:<%- speed %>
-        });
-    </script>
+  <h1>output</h1>
+  <p>
+    <img src=<%- imgs %>><br>
+  </p>
+  <p>
+  </p>
 </body>
 </html>

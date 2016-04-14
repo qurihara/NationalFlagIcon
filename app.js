@@ -46,36 +46,59 @@ server = http.createServer(function(req, res) {
       .on('end', function() {
         var now = new Date().getTime();
         console.log('-> upload done');
-        res.writeHead(200, {'content-type': 'text/html'});
-        var vl = getViewerLink(now);
-        res.write('Uploaded: <a href="' + vl + '" target="_blank">viewer link</a>');
-        // res.write('received fields:\n\n '+util.inspect(fields));
-        // res.write('\n\n');
-        // res.end('received files:\n\n '+util.inspect(files));
-        res.end();
+        // res.writeHead(200, {'content-type': 'text/html'});
+        // res.write('Uploaded: <a href="' + vl + '" target="_blank">viewer link</a>');
+        // res.end();
 
         var filestr = '';
         for(var i =0;i<files.length;i++){
           var pat = files[i][1]['path'];
+          var dir = now.toString();
 
           var child = exec(settings.exepath + " " + pat + " " + now + " 400x400", function(err, stdout, stderr) {
             if (!err) {
-              console.log('stdout: ' + stdout);
-              console.log('stderr: ' + stderr)
+              //console.log('stdout: ' + stdout);
+              //console.log('stderr: ' + stderr);
 
-              //delete all
-              fs.unlinkSync(pat);
-              rmdir(now.toString(), function (err, dirs, files) {
-                // console.log(dirs);
-                // console.log(files);
-                // console.log('all files are removed');
+              //manipulate output
+              var gifpat = now + '/icon_movie.gif';
+              var movpat = now + '/icon_movie.mp4';
+              fs.readFile(gifpat,function(err,data){
+                if(err){
+                  console.log(err);
+                  deleteFiles(pat,dir);
+                  return;
+                }
+                var str = data.toString('base64');
+
+                fs.readFile(movpat,function(err,datam){
+                  if(err){
+                    deleteFiles(pat,dir);
+                    console.log(err);
+                    return;
+                  }
+                  var strm = datam.toString('base64');
+
+                  var data = ejs.render(template, {
+                    imgs: "'data:image/gif;base64," + str + "'",
+                    movs: "'data:video/mp4;base64," + strm + "'"
+                  });
+                  res.writeHead(200, {'Content-Type': 'text/html'});
+                  res.write(data);
+                  res.end();
+
+                  console.log(pat);
+                  deleteFiles(pat,dir);
+                });
               });
+
             } else {
               console.log(err);
-                        // err.code will be the exit code of the child process
-                        console.log(err.code);
-                        //err.signal will be set to the signal that terminated the process
-                        console.log(err.signal);
+              // err.code will be the exit code of the child process
+              console.log(err.code);
+              //err.signal will be set to the signal that terminated the process
+              console.log(err.signal);
+              deleteFiles(pat,dir);
             }
           });
 
@@ -158,9 +181,15 @@ server.listen(TEST_PORT);
 
 console.log('listening on http://localhost:'+TEST_PORT+'/');
 
-function getViewerLink(date){
-  return 'view?cs=' + date + '&ce=' + date + '&i=2000&w=1200&h=600&f=0&r=true&sp=-15';
-};
+function deleteFiles(pat,dir){
+  fs.unlinkSync(pat);
+  rmdir(dir, function (err, dirs, files) {
+    // console.log(dirs);
+    // console.log(files);
+    // console.log('all files are removed');
+  });
+
+}
 
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
