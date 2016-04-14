@@ -15,7 +15,7 @@ var TEST_TMP="./img";
 var TEST_PORT=3000;
 
 var exec = require('child_process').exec;
-
+var rmdir = require('rmdir');
 
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
@@ -57,27 +57,38 @@ server = http.createServer(function(req, res) {
         var filestr = '';
         for(var i =0;i<files.length;i++){
           var pat = files[i][1]['path'];
-          filestr = filestr + "\t'" + files[i][1]['name'] + "',\n";
-          fs.readFile(pat,function(err,data){
-            if(err){
-              return;
-            }
-            var str = data.toString('base64');
 
-            console.log(pat);
-            var child = exec(settings.exepath + " " + pat + " " + now, function(err, stdout, stderr) {
-              if (!err) {
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr)
-              } else {
-                console.log(err);
-                          // err.code will be the exit code of the child process
-                          console.log(err.code);
-                          //err.signal will be set to the signal that terminated the process
-                          console.log(err.signal);
-              }
-            });
+          var child = exec(settings.exepath + " " + pat + " " + now + " 400x400", function(err, stdout, stderr) {
+            if (!err) {
+              console.log('stdout: ' + stdout);
+              console.log('stderr: ' + stderr)
+
+              //delete all
+              fs.unlinkSync(pat);
+              rmdir(now.toString(), function (err, dirs, files) {
+                // console.log(dirs);
+                // console.log(files);
+                // console.log('all files are removed');
+              });
+            } else {
+              console.log(err);
+                        // err.code will be the exit code of the child process
+                        console.log(err.code);
+                        //err.signal will be set to the signal that terminated the process
+                        console.log(err.signal);
+            }
           });
+
+          // filestr = filestr + "\t'" + files[i][1]['name'] + "',\n";
+          // fs.readFile(pat,function(err,data){
+          //   if(err){
+          //     return;
+          //   }
+          //   var str = data.toString('base64');
+          //   //do something
+          //
+          //   console.log(pat);
+          // });
         }
         var data = ejs.render(template, {
           imgs: filestr,
