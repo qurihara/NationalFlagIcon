@@ -22,7 +22,6 @@ server = http.createServer(function(req, res) {
     res.writeHead(200, {'content-type': 'text/html'});
     res.end(
       '<form action="/upload" enctype="multipart/form-data" method="post">'+
-      '<input type="text" name="title"><br>'+
       '<input type="file" name="upload" multiple="multiple"><br>'+
       '<input type="submit" value="Upload">'+
       '</form>'
@@ -62,7 +61,7 @@ server = http.createServer(function(req, res) {
 
               //manipulate output
               var gifpat = now + '/icon_movie.gif';
-              var movpat = now + '/icon_movie.mp4';
+              var movpat = pat + '.mp4';
               fs.readFile(gifpat,function(err,data){
                 if(err){
                   console.log(err);
@@ -73,15 +72,16 @@ server = http.createServer(function(req, res) {
 
                 fs.readFile(movpat,function(err,datam){
                   if(err){
-                    deleteFiles(pat,dir);
                     console.log(err);
+                    deleteFiles(pat,dir);
                     return;
                   }
                   var strm = datam.toString('base64');
 
                   var data = ejs.render(template, {
                     imgs: "'data:image/gif;base64," + str + "'",
-                    movs: "'data:video/mp4;base64," + strm + "'"
+                    rotation: "'data:video/mp4;base64," + strm + "'",
+                    speed: movpat
                   });
                   res.writeHead(200, {'Content-Type': 'text/html'});
                   res.write(data);

@@ -28,5 +28,6 @@ convert -delay 1 -loop 0 $dir/flags_resized_mixed/resize_*.png $dir/icon_movie.g
 
 # make it an movie
 ffmpeg -r 30 -i $dir/flags_resized_mixed/resize_%4d.png -c:v libx264 -pix_fmt yuv420p -s $size $dir/icon_movie.mp4
+cp $dir/icon_movie.mp4 $img.mp4
 
 exit 0
