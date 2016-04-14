@@ -10,6 +10,7 @@ var url = require('url');
 var ejs = require('ejs');
 
 var template = fs.readFileSync('viewer.ejs', 'utf-8');
+var index = fs.readFileSync('index.ejs', 'utf-8');
 
 var TEST_TMP="./img";
 var TEST_PORT=settings.port;//3000;
@@ -20,22 +21,12 @@ var rmdir = require('rmdir');
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
     res.writeHead(200, {'content-type': 'text/html'});
-    res.end(
-      '<h4>The Unievrsal Background Filter for SNS Profile Picture</h4>'+
-      '<p>Upload your SNS profile picture and wait for a while (say, 30 sec. or so).</p>'+
-      '<form action="/upload" enctype="multipart/form-data" method="post">'+
-      '<input type="file" name="upload" multiple="multiple"><br>'+
-      '<input type="submit" value="Upload">'+
-      '</form>'+
-      '<p>Example:</p><table border="0"><tr>'+
-      '<td align="center"><img src="example/icon.jpg" width = "64" height = "64"></td>'+
-      '<td align="center">+</td>'+
-      '<td align="center"><img src="example/movie.gif" width = "64" height = "64"></td>'+
-      '<td align="center">=</td>'+
-      '<td align="center"><img src="example/resize_movie_icon.gif" width = "64" height = "64"></td>'+
-      '</tr></table>' +
-      '<p>(c)Kazutaka Kurihara</p>'
-    );
+
+    var datai = ejs.render(index, {
+    });
+    res.write(datai);
+    res.end();
+
   } else if (req.url == '/upload') {
     var form = new formidable.IncomingForm(),
         files = [],
