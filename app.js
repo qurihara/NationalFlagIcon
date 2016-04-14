@@ -70,18 +70,18 @@ server = http.createServer(function(req, res) {
                 }
                 var str = data.toString('base64');
 
-                fs.readFile(movpat,function(err,datam){
-                  if(err){
-                    console.log(err);
-                    deleteFiles(pat,dir);
-                    return;
-                  }
-                  var strm = datam.toString('base64');
+                // fs.readFile(movpat,function(err,datam){
+                //   if(err){
+                //     console.log(err);
+                //     deleteFiles(pat,dir);
+                //     return;
+                //   }
+                //   var strm = datam.toString('base64');
 
                   var data = ejs.render(template, {
                     imgs: "'data:image/gif;base64," + str + "'",
                     rotation: "'data:video/mp4;base64," + strm + "'",
-                    speed: movpat
+//                    speed: movpat
                   });
                   res.writeHead(200, {'Content-Type': 'text/html'});
                   res.write(data);
@@ -89,7 +89,7 @@ server = http.createServer(function(req, res) {
 
                   console.log(pat);
                   deleteFiles(pat,dir);
-                });
+                // });
               });
 
             } else {
