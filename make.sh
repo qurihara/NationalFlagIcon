@@ -25,7 +25,7 @@ find . -name \*.png -exec composite -dissolve 10%x100% {} ../resize_icon.png ../
 cd ../..
 
 # make it an animated gif
-convert -delay 1 -loop 0 $dir/flags_resized_mixed/resize_*.png $dir/icon_movie.gif
+#convert -delay 1 -loop 0 $dir/flags_resized_mixed/resize_*.png $dir/icon_movie.gif
 
 # make it an movie
 #ffmpeg -r 30 -i $dir/flags_resized_mixed/resize_%4d.png -c:v libx264 -pix_fmt yuv420p -s $size $dir/icon_movie.mp4

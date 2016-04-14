@@ -8,12 +8,6 @@
 
 <body>
   <script type="text/javascript">
-    function startDownloadg() {
-        var text = <%- imgs %>;
-        var blob = toBlob(text,'image/gif');
-        var url = window.URL.createObjectURL(blob);
-        document.getElementById('downloadg').href = url;
-    }
     function startDownloadv() {
         var text = <%- rotation %>;
         var blob = toBlob(text,'video/mp4');
@@ -43,7 +37,7 @@
     <video id="video" controls src=<%- rotation %> width=200 height=200 autoplay loop></video>
   </p>
   <p><a href="#" id="downloadv" download="icon.mp4" onclick="startDownloadv()">download mp4 (available for Facebook profile movie)</a></p>
-  <p><a href="#" id="downloadg" download="icon.gif" onclick="startDownloadg()">download gif</a></p>
+  <p>Sorry, animated gif download is not available now.</a></p>
   <p><a href="/" >go back</a></p>
   <p>(c)Kazutaka Kurihara</p>
 

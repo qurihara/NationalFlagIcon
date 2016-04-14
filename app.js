@@ -9,7 +9,7 @@ var settings = require('./settings');
 var url = require('url');
 var ejs = require('ejs');
 
-var template = fs.readFileSync('viewer.ejs', 'utf-8');
+var template = fs.readFileSync(settings.viewer_tempate, 'utf-8');
 var index = fs.readFileSync('index.ejs', 'utf-8');
 
 var TEST_TMP="./img";
@@ -64,13 +64,13 @@ server = http.createServer(function(req, res) {
               var gifpat = now + '/icon_movie.gif';
               //var movpat = pat + '.mp4';
               var movpat = now + '/icon_movie.mp4';
-              fs.readFile(gifpat,function(err,data){
-                if(err){
-                  console.log(err);
-                  deleteFiles(pat,dir);
-                  return;
-                }
-                var str = data.toString('base64');
+              // fs.readFile(gifpat,function(err,data){
+              //   if(err){
+              //     console.log(err);
+              //     deleteFiles(pat,dir);
+              //     return;
+              //   }
+                // var str = data.toString('base64');
 
                 fs.readFile(movpat,function(err,datam){
                   if(err){
@@ -81,7 +81,7 @@ server = http.createServer(function(req, res) {
                   var strm = datam.toString('base64');
 
                   var data = ejs.render(template, {
-                    imgs: "'data:image/gif;base64," + str + "'",
+                    // imgs: "'data:image/gif;base64," + str + "'",
                     rotation: "'data:video/mp4;base64," + strm + "'",
 //                    speed: movpat
                   });
@@ -92,7 +92,7 @@ server = http.createServer(function(req, res) {
                   console.log(pat);
                   deleteFiles(pat,dir);
                 });
-              });
+              // });
 
             } else {
               console.log(err);
