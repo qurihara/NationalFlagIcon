@@ -18,6 +18,39 @@ var TEST_PORT=settings.port;//3000;
 var exec = require('child_process').exec;
 var rmdir = require('rmdir');
 
+var nodemailer = require("nodemailer");
+var smtpTransport = nodemailer.createTransport("SMTP",{
+  service:"Gmail",
+  auth:{
+    user:settings.GmailAddress, // GMailのアドレス
+    pass:settings.GmailPass // GMailのパスワード
+  }
+});
+
+function sendMail(toEmailAddress, path){
+  var mailOptions={
+    from:settings.GmailAddress,
+    to:toEmailAddress,
+    subject:"The Universal Background Filter created your SNS profile image.",
+    text:"Here is your image. Have fun!",
+    attachments:[
+      {
+        filename:"icon.mp4",
+        filePath:path
+      }
+    ]
+  };
+
+  smtpTransport.sendMail(mailOptions,function(error,response){
+    if(error){
+      console.log(error);
+    }else {
+      console.log("OK "+ response.message);
+    }
+    smtpTransport.close();
+  });
+}
+
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
     res.writeHead(200, {'content-type': 'text/html'});
@@ -46,6 +79,7 @@ server = http.createServer(function(req, res) {
       .on('end', function() {
         var now = new Date().getTime();
         console.log('-> upload done');
+        console.log('received fields:\n\n '+util.inspect(fields));
         // res.writeHead(200, {'content-type': 'text/html'});
         // res.write('Uploaded: <a href="' + vl + '" target="_blank">viewer link</a>');
         // res.end();
@@ -88,6 +122,12 @@ server = http.createServer(function(req, res) {
                   res.writeHead(200, {'Content-Type': 'text/html'});
                   res.write(data);
                   res.end();
+
+                  if (fields[0][0] == 'email'){
+                    var emailad = fields[0][1]);
+                    sendMail(emailad, movpat);
+                  }
+
 
                   console.log(pat);
                   deleteFiles(pat,dir);
