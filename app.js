@@ -20,36 +20,15 @@ var rmdir = require('rmdir');
 
 var nodemailer = require("nodemailer");
 var smtpTransport = nodemailer.createTransport("SMTP",{
-  service:"Gmail",
+  service: 'Gmail',
+  ssl: true,
+  use_authentication: true,
   auth:{
-    user:settings.GmailAddress, // GMailのアドレス
-    pass:settings.GmailPass // GMailのパスワード
+    user:settings.GmailAddress,
+    pass:settings.GmailPass 
   }
 });
 
-function sendMail(toEmailAddress, path){
-  var mailOptions={
-    from:settings.GmailAddress,
-    to:toEmailAddress,
-    subject:"The Universal Background Filter created your SNS profile image.",
-    text:"Here is your image. Have fun!",
-    attachments:[
-      {
-        filename:"icon.mp4",
-        filePath:path
-      }
-    ]
-  };
-
-  smtpTransport.sendMail(mailOptions,function(error,response){
-    if(error){
-      console.log(error);
-    }else {
-      console.log("OK "+ response.message);
-    }
-    smtpTransport.close();
-  });
-}
 
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
@@ -124,13 +103,34 @@ server = http.createServer(function(req, res) {
                   res.end();
 
                   if (fields[0][0] == 'email'){
-                    var emailad = fields[0][1]);
-                    sendMail(emailad, movpat);
+                    var emailad = fields[0][1];
+
+                    var mailOptions={
+                      from:settings.GmailAddress,
+                      to:emailad,
+                      subject:"The Universal Background Filter created your SNS profile image.",
+                      text:"Here is your image. Have fun!",
+                      attachments:[
+                        {
+                          filename:"icon.mp4",
+                          filePath:movpat
+                        }
+                      ]
+                    };
+
+                    smtpTransport.sendMail(mailOptions,function(error,response){
+                      if(error){
+                        console.log(error);
+                      }else {
+                        console.log("OK "+ response.message);
+                      }
+                      smtpTransport.close();
+                      deleteFiles(pat,dir);
+                    });
+                  }else{
+                    console.log(pat);
+                    deleteFiles(pat,dir);
                   }
-
-
-                  console.log(pat);
-                  deleteFiles(pat,dir);
                 });
               // });
 
