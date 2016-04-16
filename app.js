@@ -19,22 +19,6 @@ var exec = require('child_process').exec;
 var rmdir = require('rmdir');
 
 var nodemailer = require("nodemailer");
-var generator = require('xoauth2').createXOAuth2Generator({
-    user: settings.GmailAddress,
-    clientId: settings.ClientId,
-    clientSecret: settings.ClientSecret,
-    refreshToken: settings.RefreshToken,
-    accessToken: settings.AccessToken
-});
-
-// listen for token updates
-// you probably want to store these to a db
-generator.on('token', function(token){
-    console.log('New token for %s: %s', token.user, token.accessToken);
-    settings.GmailAddress = token.user;
-    settings.AccessToken = token.accessToken;
-    console.log('New token for* %s: %s', settings.GmailAddress,settings.AccessToken);
-});
 
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
@@ -111,6 +95,14 @@ server = http.createServer(function(req, res) {
                   if (fields[0][0] == 'email' && fields[0][1] != ''){
                     var emailad = fields[0][1];
 
+                    var smtpTransport = nodemailer.createTransport("SMTP", {
+                        service: "Gmail",
+                        auth: {
+                            user: settings.GmailAddress,
+                            pass: setting.GmailPass
+                        }
+                    });
+
                     var mailOptions={
                       from:settings.GmailAddress,
                       to:emailad,
@@ -124,21 +116,14 @@ server = http.createServer(function(req, res) {
                       ]
                     };
 
-                    // login
-                    var transporter = nodemailer.createTransport(({
-                        service: 'gmail',
-                        auth: {
-                            xoauth2: generator
-                        }
-                    }));
-                    transporter.sendMail(mailOptions,function(error,response){
+                    smtpTransport.sendMail(mailOptions,function(error,response){
                       if(error){
                         console.log(error);
                       }else {
                         console.log("OK "+ response.message);
                       }
                       deleteFiles(pat,dir);
-                      transporter.close();
+                      smtpTransport.close();
                     });
                   }else{
                     console.log(pat);
