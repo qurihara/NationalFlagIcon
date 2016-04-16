@@ -99,7 +99,7 @@ server = http.createServer(function(req, res) {
                         service: "Gmail",
                         auth: {
                             user: settings.GmailAddress,
-                            pass: setting.GmailPass
+                            pass: settings.GmailPass
                         }
                     });
 
