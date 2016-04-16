@@ -31,15 +31,10 @@ var generator = require('xoauth2').createXOAuth2Generator({
 // you probably want to store these to a db
 generator.on('token', function(token){
     console.log('New token for %s: %s', token.user, token.accessToken);
+    settings.GmailAddress = token.user;
+    settings.AccessToken = token.accessToken;
+    console.log('New token for* %s: %s', settings.GmailAddress,settings.AccessToken);
 });
-
-// login
-var transporter = nodemailer.createTransport(({
-    service: 'gmail',
-    auth: {
-        xoauth2: generator
-    }
-}));
 
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
@@ -128,7 +123,14 @@ server = http.createServer(function(req, res) {
                         }
                       ]
                     };
-                    
+
+                    // login
+                    var transporter = nodemailer.createTransport(({
+                        service: 'gmail',
+                        auth: {
+                            xoauth2: generator
+                        }
+                    }));
                     transporter.sendMail(mailOptions,function(error,response){
                       if(error){
                         console.log(error);
@@ -136,6 +138,7 @@ server = http.createServer(function(req, res) {
                         console.log("OK "+ response.message);
                       }
                       deleteFiles(pat,dir);
+                      transporter.close();
                     });
                   }else{
                     console.log(pat);
