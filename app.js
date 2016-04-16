@@ -19,16 +19,27 @@ var exec = require('child_process').exec;
 var rmdir = require('rmdir');
 
 var nodemailer = require("nodemailer");
-var smtpTransport = nodemailer.createTransport("SMTP",{
-  service: 'Gmail',
-  ssl: true,
-  use_authentication: true,
-  auth:{
-    user:settings.GmailAddress,
-    pass:settings.GmailPass 
-  }
+var generator = require('xoauth2').createXOAuth2Generator({
+    user: settings.GmailAddress,
+    clientId: settings.ClientId,
+    clientSecret: settings.ClientSecret,
+    refreshToken: settings.RefreshToken,
+    accessToken: settings.AccessToken
 });
 
+// listen for token updates
+// you probably want to store these to a db
+generator.on('token', function(token){
+    console.log('New token for %s: %s', token.user, token.accessToken);
+});
+
+// login
+var transporter = nodemailer.createTransport(({
+    service: 'gmail',
+    auth: {
+        xoauth2: generator
+    }
+}));
 
 server = http.createServer(function(req, res) {
   if (req.url == '/') {
@@ -102,7 +113,7 @@ server = http.createServer(function(req, res) {
                   res.write(data);
                   res.end();
 
-                  if (fields[0][0] == 'email'){
+                  if (fields[0][0] == 'email' && fields[0][1] != ''){
                     var emailad = fields[0][1];
 
                     var mailOptions={
@@ -117,14 +128,13 @@ server = http.createServer(function(req, res) {
                         }
                       ]
                     };
-
-                    smtpTransport.sendMail(mailOptions,function(error,response){
+                    
+                    transporter.sendMail(mailOptions,function(error,response){
                       if(error){
                         console.log(error);
                       }else {
                         console.log("OK "+ response.message);
                       }
-                      smtpTransport.close();
                       deleteFiles(pat,dir);
                     });
                   }else{
