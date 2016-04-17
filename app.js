@@ -24,7 +24,9 @@ server = http.createServer(function(req, res) {
   if (req.url == '/') {
     res.writeHead(200, {'content-type': 'text/html'});
 
+
     var datai = ejs.render(index, {
+      email: settings.sender
     });
     res.write(datai);
     res.end();
@@ -53,9 +55,23 @@ server = http.createServer(function(req, res) {
         // res.write('Uploaded: <a href="' + vl + '" target="_blank">viewer link</a>');
         // res.end();
 
+        if (
+            (fields.length == 0) ||
+            (files.length != 1) ||
+            (fields[1][0] == 'honeypot' && fields[1][1] != '') ||
+            (files[0][1]['type'].lastIndexOf('image', 0) != 0) ||
+            (files[0][1]['size'] == 0)
+          ){
+          res.writeHead(503);
+          res.write("error.");
+          res.end();
+          fs.unlinkSync(files[0][1]['path']);
+          return;
+        }
+
         var filestr = '';
-        for(var i =0;i<files.length;i++){
-          var pat = files[i][1]['path'];
+        // for(var i =0;i<files.length;i++){
+          var pat = files[0][1]['path'];
           var dir = now.toString();
 
           var child = exec(settings.exepath + " " + pat + " " + now + " 400x400", function(err, stdout, stderr) {
@@ -107,7 +123,7 @@ server = http.createServer(function(req, res) {
                       from:settings.GmailAddress,
                       to:emailad,
                       subject:"The Universal Background Filter created your SNS profile image.",
-                      text:"Here is your image. Have fun!",
+                      text:"Here is your image. Have fun! (Ignore me if you have no idea why you got this mail.)",
                       attachments:[
                         {
                           filename:"icon.mp4",
@@ -141,7 +157,7 @@ server = http.createServer(function(req, res) {
               deleteFiles(pat,dir);
             }
           });
-        }
+        // }
       });
     form.parse(req);
   } else {
