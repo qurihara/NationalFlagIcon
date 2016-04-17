@@ -65,7 +65,9 @@ server = http.createServer(function(req, res) {
           res.writeHead(503);
           res.write("error.");
           res.end();
-          fs.unlinkSync(files[0][1]['path']);
+          for (var j=0;i<files.length;j++){
+            fs.unlinkSync(files[j][1]['path']);
+          }
           return;
         }
 
