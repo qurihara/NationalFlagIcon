@@ -22,7 +22,7 @@ brew install ffmpeg
 
 npm install
 
-npm app
+node app
 
 And access the app with your browser (default: http://localhost:3000 ).
 
